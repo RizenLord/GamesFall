@@ -100,7 +100,7 @@ function PlayState:update(dt)
         if self.powerupSpawn == true then
             if powerup:collision(self.paddle) == true then
                 for i = 0, 1 do
-                    local ball = Ball(self.balls[1].skin)
+                    local ball = Ball(math.random(7))
                     ball.x = self.ball.x + self.ball.width / 2 - ball.width / 2
                     ball.y = self.ball.y - ball.height
                     ball.dx = math.random(-200, 200)
