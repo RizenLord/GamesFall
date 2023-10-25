@@ -109,7 +109,7 @@ function PlayState:update(dt)
                 if powerup.skin == 8 then
                     local bigBall = Ball(math.random(7))
                     bigBall.x = self.paddle.x + self.paddle.width / 2
-                    bigBall.y = self.paddle.y + self.paddle.height / 2
+                    bigBall.y = self.paddle.y + self.paddle.height
                     bigBall.width = 16
                     bigBall.height = 16
                     bigBall.dx = math.random(-100, 100)
