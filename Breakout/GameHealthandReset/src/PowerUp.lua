@@ -1,7 +1,7 @@
 
 PowerUp = Class{}
 
-function PowerUp:init(x, y)
+function PowerUp:init(x, y, skin)
     -- simple positional and dimensional variables
     self.width = 16
     self.height = 16
@@ -13,6 +13,8 @@ function PowerUp:init(x, y)
     -- X and Y axis, since the ball can move in two dimensions
     self.dy = 0
     self.dx = 0
+
+    self.skin = skin
 end
 
 function PowerUp:update(dt)
@@ -38,5 +40,5 @@ end
 
 function PowerUp:render()
     -- gTexture is our global texture for all blocks
-    love.graphics.draw(gTextures['main'], gFrames['powerUps'][9], self.x, self.y)
+    love.graphics.draw(gTextures['main'], gFrames['powerUps'][self.skin], self.x, self.y)
 end

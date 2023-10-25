@@ -35,25 +35,15 @@ function PlayState:enter(params)
 
     self.powerups = {}
     self.powerupSpawn = false
-    self.timer = 0
-    self.interval = 5
 
     -- give ball random starting velocity
     self.balls[1].dx = math.random(-200, 200)
     self.balls[1].dy = math.random(-50, -60)
+
+    self.key = false
 end
 
 function PlayState:update(dt)
-    self.timer = self.timer + dt
-
-    print(self.timer)
-    if self.timer >= self.interval then
-        self.powerupSpawn = true
-        print("spawned true")
-        table.insert(self.powerups, PowerUp(50, 0))
-        self.timer = 0
-    end
-
 
     if self.paused then
         if love.keyboard.wasPressed('space') then
@@ -93,23 +83,41 @@ function PlayState:update(dt)
     end
 
     for k, powerup in pairs(self.powerups) do
-        if self.powerupSpawn == true then
-            powerup:update(dt)
-        end
 
         if self.powerupSpawn == true then
             if powerup:collision(self.paddle) == true then
-                for i = 0, 1 do
-                    local ball = Ball(math.random(7))
-                    ball.x = self.ball.x + self.ball.width / 2 - ball.width / 2
-                    ball.y = self.ball.y - ball.height
-                    ball.dx = math.random(-200, 200)
-                    ball.dy = math.random(-50, -60)
-                    table.insert(self.balls, ball)
+                if powerup.skin == 9 then
+
+                    for i = 0, 1 do
+                        local ball = Ball(math.random(7))
+                        ball.x = self.balls[1].x + self.balls[1].width / 2 - ball.width / 2
+                        ball.y = self.balls[1].y - ball.height
+                        ball.dx = math.random(-200, 200)
+                        ball.dy = math.random(-50, -60)
+                        table.insert(self.balls, ball)
+                    end
                     table.remove(self.powerups, k)
+                    self.powerupSpawn = false
                 end
-                self.powerupSpawn = false
-                self.timer = 0
+
+                if powerup.skin == 10 then
+                    self.key = true
+                    table.remove(self.powerups, k)
+                    self.powerupSpawn = false
+                end
+
+                if powerup.skin == 8 then
+                    local bigBall = Ball(math.random(7))
+                    bigBall.x = self.paddle.x + self.paddle.width / 2
+                    bigBall.y = self.paddle.y + self.paddle.height / 2
+                    bigBall.width = 16
+                    bigBall.height = 16
+                    bigBall.dx = math.random(-100, 100)
+                    bigBall.dy = math.random(-25, -30)
+                    table.insert(self.balls, bigBall)
+                    table.remove(self.powerups, k)
+                    self.powerupSpawn = false
+                end
             end
         end
     end
@@ -139,8 +147,13 @@ function PlayState:update(dt)
 
             if brick.inPlay and ball:collides(brick) then
 
-                -- add to score
-                self.score = self.score + (brick.tier * 200 + brick.color * 25)
+                if self.key and brick.locked then
+                    self.score = self.score + 5000
+                elseif brick.locked then
+                    --do nothing
+                else
+                    self.score = self.score + (brick.tier * 200 + brick.color * 25)
+                end
 
                 -- trigger the brick's hit function, which removes it from play
                 brick:hit()
@@ -155,6 +168,24 @@ function PlayState:update(dt)
 
                     -- play recover sound effect
                     gSounds['recover']:play()
+                end
+
+
+                if math.random(100) < 25 then
+                    local num = math.random(3)
+                    if num == 1 then
+                        self.powerupSpawn = true
+                        print("Spawned PowerUp")
+                        table.insert(self.powerups, PowerUp(ball.x, ball.y, 10))
+                    elseif num == 2 then
+                        self.powerupSpawn = true
+                        print("Spawned PowerUp")
+                        table.insert(self.powerups, PowerUp(ball.x, ball.y, 9))
+                    elseif num == 3 then
+                        self.powerupSpawn = true
+                        print("Spawned PowerUp")
+                        table.insert(self.powerups, PowerUp(ball.x, ball.y, 8))
+                    end
                 end
 
                 -- go to our victory screen if there are no more bricks left
@@ -255,6 +286,10 @@ function PlayState:update(dt)
 
     for k, ball in pairs(self.balls) do
         ball:update(dt)
+    end
+
+    for k, powerup in pairs(self.powerups) do
+        powerup:update(dt)
     end
 
     if love.keyboard.wasPressed('escape') then
