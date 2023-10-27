@@ -17,6 +17,8 @@ NONE = 1
 SINGLE_PYRAMID = 2
 MULTI_PYRAMID = 3
 
+
+LOCKED_CHANCE = 2 -- 100% for locked bricks if it is set above 5
 -- per-row patterns
 SOLID = 1           -- all colors the same in this row
 ALTERNATE = 2       -- alternate colors
@@ -84,6 +86,8 @@ function LevelMaker.createMap(level)
                 skipFlag = not skipFlag
             end
 
+            local isLocked = math.random(5) < LOCKED_CHANCE
+
             b = Brick(
                 -- x-coordinate
                 (x-1)                   -- decrement x by 1 because tables are 1-indexed, coords are 0
@@ -92,7 +96,8 @@ function LevelMaker.createMap(level)
                 + (13 - numCols) * 16,  -- left-side padding for when there are fewer than 13 columns
                 
                 -- y-coordinate
-                y * 16                  -- just use y * 16, since we need top padding anyway
+                y * 16,                  -- just use y * 16, since we need top padding anyway
+                isLocked
             )
 
             -- if we're alternating, figure out which color/tier we're on

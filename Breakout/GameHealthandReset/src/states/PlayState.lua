@@ -87,7 +87,7 @@ function PlayState:update(dt)
         if self.powerupSpawn == true then
             if powerup:collision(self.paddle) == true then
                 if powerup.skin == 9 then
-
+                    table.remove(self.powerups, k)
                     for i = 0, 1 do
                         local ball = Ball(math.random(7))
                         ball.x = self.balls[1].x + self.balls[1].width / 2 - ball.width / 2
@@ -96,26 +96,19 @@ function PlayState:update(dt)
                         ball.dy = math.random(-50, -60)
                         table.insert(self.balls, ball)
                     end
-                    table.remove(self.powerups, k)
                     self.powerupSpawn = false
-                end
 
-                if powerup.skin == 10 then
+                elseif powerup.skin == 10 then
+                    table.remove(self.powerups, k)
                     self.key = true
-                    table.remove(self.powerups, k)
                     self.powerupSpawn = false
-                end
 
-                if powerup.skin == 8 then
-                    local bigBall = Ball(math.random(7))
-                    bigBall.x = self.paddle.x + self.paddle.width / 2
-                    bigBall.y = self.paddle.y + self.paddle.height
-                    bigBall.width = 16
-                    bigBall.height = 16
-                    bigBall.dx = math.random(-100, 100)
-                    bigBall.dy = math.random(-25, -30)
-                    table.insert(self.balls, bigBall)
+                elseif powerup.skin == 8 then
                     table.remove(self.powerups, k)
+                    for p, ball in pairs(self.balls) do
+                        self.balls[p].dx = self.balls[p].dx * .5
+                        self.balls[p].dy = self.balls[p].dy * .5
+                    end
                     self.powerupSpawn = false
                 end
             end
@@ -149,14 +142,45 @@ function PlayState:update(dt)
 
                 if self.key and brick.locked then
                     self.score = self.score + 5000
+                    local num = math.random(3)
+                        if num == 1 then
+                            self.powerupSpawn = true
+                            print("Spawned PowerUp")
+                            table.insert(self.powerups, PowerUp(ball.x, ball.y, 10)) -- Key
+                        elseif num == 2 then
+                            self.powerupSpawn = true
+                            print("Spawned PowerUp")
+                            table.insert(self.powerups, PowerUp(ball.x, ball.y, 9)) -- Extra Ball
+                        elseif num == 3 then
+                            self.powerupSpawn = true
+                            print("Spawned PowerUp")
+                            table.insert(self.powerups, PowerUp(ball.x, ball.y, 8)) -- Slow Balls
+                        end
                 elseif brick.locked then
                     --do nothing
                 else
                     self.score = self.score + (brick.tier * 200 + brick.color * 25)
+
+                    if math.random(100) < 25 then
+                        local num = math.random(3)
+                        if num == 1 then
+                            self.powerupSpawn = true
+                            print("Spawned PowerUp")
+                            table.insert(self.powerups, PowerUp(ball.x, ball.y, 10)) -- Key
+                        elseif num == 2 then
+                            self.powerupSpawn = true
+                            print("Spawned PowerUp")
+                            table.insert(self.powerups, PowerUp(ball.x, ball.y, 9)) -- Extra Ball
+                        elseif num == 3 then
+                            self.powerupSpawn = true
+                            print("Spawned PowerUp")
+                            table.insert(self.powerups, PowerUp(ball.x, ball.y, 8)) -- Slow Balls
+                        end
+                    end
                 end
 
                 -- trigger the brick's hit function, which removes it from play
-                brick:hit()
+                brick:hit(self.key)
 
                 -- if we have enough points, recover a point of health
                 if self.score > self.recoverPoints then
@@ -168,24 +192,6 @@ function PlayState:update(dt)
 
                     -- play recover sound effect
                     gSounds['recover']:play()
-                end
-
-
-                if math.random(100) < 25 then
-                    local num = math.random(3)
-                    if num == 1 then
-                        self.powerupSpawn = true
-                        print("Spawned PowerUp")
-                        table.insert(self.powerups, PowerUp(ball.x, ball.y, 10))
-                    elseif num == 2 then
-                        self.powerupSpawn = true
-                        print("Spawned PowerUp")
-                        table.insert(self.powerups, PowerUp(ball.x, ball.y, 9))
-                    elseif num == 3 then
-                        self.powerupSpawn = true
-                        print("Spawned PowerUp")
-                        table.insert(self.powerups, PowerUp(ball.x, ball.y, 8))
-                    end
                 end
 
                 -- go to our victory screen if there are no more bricks left
