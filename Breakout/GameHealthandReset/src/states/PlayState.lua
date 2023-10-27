@@ -84,32 +84,27 @@ function PlayState:update(dt)
 
     for k, powerup in pairs(self.powerups) do
 
-        if self.powerupSpawn == true then
-            if powerup:collision(self.paddle) == true then
-                if powerup.skin == 9 then
-                    table.remove(self.powerups, k)
-                    for i = 0, 1 do
-                        local ball = Ball(math.random(7))
-                        ball.x = self.balls[1].x + self.balls[1].width / 2 - ball.width / 2
-                        ball.y = self.balls[1].y - ball.height
-                        ball.dx = math.random(-200, 200)
-                        ball.dy = math.random(-50, -60)
-                        table.insert(self.balls, ball)
-                    end
-                    self.powerupSpawn = false
+        if powerup:collision(self.paddle) == true then
+            if powerup.skin == 9 then -- Balls PowerUp
+                table.remove(self.powerups, k)
+                for i = 0, 1 do
+                    local ball = Ball(math.random(7))
+                    ball.x = self.balls[1].x + self.balls[1].width / 2 - ball.width / 2
+                    ball.y = self.balls[1].y - ball.height
+                    ball.dx = math.random(-200, 200)
+                    ball.dy = math.random(-50, -60)
+                    table.insert(self.balls, ball)
+                end
 
-                elseif powerup.skin == 10 then
-                    table.remove(self.powerups, k)
-                    self.key = true
-                    self.powerupSpawn = false
+            elseif powerup.skin == 10 then -- Key PowerUp
+                table.remove(self.powerups, k)
+                self.key = true
 
-                elseif powerup.skin == 8 then
-                    table.remove(self.powerups, k)
-                    for p, ball in pairs(self.balls) do
-                        self.balls[p].dx = self.balls[p].dx * .5
-                        self.balls[p].dy = self.balls[p].dy * .5
-                    end
-                    self.powerupSpawn = false
+            elseif powerup.skin == 8 then -- Slow PowerUp
+                table.remove(self.powerups, k)
+                for p, ball in pairs(self.balls) do
+                    self.balls[p].dx = self.balls[p].dx * .5
+                    self.balls[p].dy = self.balls[p].dy * .5
                 end
             end
         end
@@ -144,15 +139,12 @@ function PlayState:update(dt)
                     self.score = self.score + 5000
                     local num = math.random(3)
                         if num == 1 then
-                            self.powerupSpawn = true
                             print("Spawned PowerUp")
                             table.insert(self.powerups, PowerUp(ball.x, ball.y, 10)) -- Key
                         elseif num == 2 then
-                            self.powerupSpawn = true
                             print("Spawned PowerUp")
                             table.insert(self.powerups, PowerUp(ball.x, ball.y, 9)) -- Extra Ball
                         elseif num == 3 then
-                            self.powerupSpawn = true
                             print("Spawned PowerUp")
                             table.insert(self.powerups, PowerUp(ball.x, ball.y, 8)) -- Slow Balls
                         end
@@ -164,15 +156,12 @@ function PlayState:update(dt)
                     if math.random(100) < 25 then
                         local num = math.random(3)
                         if num == 1 then
-                            self.powerupSpawn = true
                             print("Spawned PowerUp")
                             table.insert(self.powerups, PowerUp(ball.x, ball.y, 10)) -- Key
                         elseif num == 2 then
-                            self.powerupSpawn = true
                             print("Spawned PowerUp")
                             table.insert(self.powerups, PowerUp(ball.x, ball.y, 9)) -- Extra Ball
                         elseif num == 3 then
-                            self.powerupSpawn = true
                             print("Spawned PowerUp")
                             table.insert(self.powerups, PowerUp(ball.x, ball.y, 8)) -- Slow Balls
                         end
