@@ -103,8 +103,14 @@ function PlayState:update(dt)
             elseif powerup.skin == 8 then -- Slow PowerUp
                 table.remove(self.powerups, k)
                 for p, ball in pairs(self.balls) do
-                    self.balls[p].dx = self.balls[p].dx * .5
-                    self.balls[p].dy = self.balls[p].dy * .5
+                    if self.balls[p].dy >= -25 then
+                        break
+                    elseif self.balls[p].dy >= -30 then
+                        break
+                    else
+                        self.balls[p].dx = self.balls[p].dx * .5
+                        self.balls[p].dy = self.balls[p].dy * .5
+                    end
                 end
             end
         end
