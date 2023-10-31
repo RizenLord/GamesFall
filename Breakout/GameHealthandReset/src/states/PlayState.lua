@@ -120,7 +120,7 @@ function PlayState:update(dt)
 
         if ball:collides(self.paddle) then
             ball.y = self.paddle.y - 8
-            ball.dy = -self.ball.dy
+            ball.dy = -ball.dy
 
             if ball.x < self.paddle.x + (self.paddle.width / 2) and self.paddle.dx < 0 then
                 ball.dx = -50 + -(8 * (self.paddle.x + self.paddle.width / 2 - ball.x))
