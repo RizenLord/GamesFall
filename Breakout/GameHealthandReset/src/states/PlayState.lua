@@ -31,7 +31,8 @@ function PlayState:enter(params)
     self.level = params.level
     self.balls = {params.ball}
 
-    self.recoverPoints = 5000
+    self.recoverPoints = params.recoverPoints or 5000
+    print(self.recoverPoints)
 
     self.powerups = {}
     self.powerupSpawn = false
@@ -179,11 +180,11 @@ function PlayState:update(dt)
 
                 -- if we have enough points, recover a point of health
                 if self.score > self.recoverPoints then
-                    -- can't go above 3 health
                     self.health = math.min(5, self.health + 1)
 
                     -- multiply recover points by 2
                     self.recoverPoints = math.min(100000, self.recoverPoints * 2)
+                    print(self.recoverPoints)
 
                     -- play recover sound effect
                     gSounds['recover']:play()
@@ -253,6 +254,16 @@ function PlayState:update(dt)
                 break
             end
         end
+    end
+
+    if self.health == 5 then
+        self.paddle.size = 4
+    elseif self.health == 4 then
+        self.paddle.size = 3
+    elseif self.health == 3 then
+        self.paddle.size = 2
+    else
+        self.paddle.size = 1
     end
 
     -- if ball goes below bounds, revert to serve state and decrease health
