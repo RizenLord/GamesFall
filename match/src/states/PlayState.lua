@@ -121,6 +121,7 @@ function PlayState:update(dt)
             gSounds['select']:play()
         end
 
+
         -- if we've pressed enter, to select or deselect a tile...
         if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
             
