@@ -171,6 +171,9 @@ function PlayState:update(dt)
                     local highlightedTile = self.highlightedTile
 
                     if self:calculateMatches() == false then
+                        gSounds['error']:play()
+                        self.highlightedTile = nil
+                        
                         local tempX = highlightedTile.gridX
                         local tempY = highlightedTile.gridY
     
