@@ -61,62 +61,66 @@ function Board:isMatches()
 
             if x-1 >= 1 then --check to the left
                 --swap the two tiles using a hilarious function i created so this isnt 100000 lines long
-                self.tileSwap(swapTemp, self.tiles[y][x-1])
+                tempNew = self.tiles[y][x-1]
+                self:tileSwap(swapTemp, tempNew)
 
-                if self.calculateMatches() then
-                    self.tileSwap(swapTemp, self.tiles[y][x-1])
+                if self:calculateMatches() then
+                    self:tileSwap(swapTemp, tempNew)
                     return true
                 end
-                self.tileSwap(swapTemp, self.tiles[y][x-1]) -- swap back
+                self:tileSwap(swapTemp, tempNew) -- swap back
             end
 
             if x+1 <= 8 then --check to the right
-                self.tileSwap(swapTemp, self.tiles[y][x+1])
+                tempNew = self.tiles[y][x+1]
+                self:tileSwap(swapTemp, tempNew)
 
-                if self.calculateMatches() then
-                    self.tileSwap(swapTemp, self.tiles[y][x+1])
+                if self:calculateMatches() then
+                    self:tileSwap(swapTemp, tempNew)
                     return true
                 end
-                self.tileSwap(swapTemp, self.tiles[y][x+1])
+                self:tileSwap(swapTemp, tempNew)
             end
 
             if y-1 >= 1 then --check below
-                self.tileSwap(swapTemp, self.tiles[y-1][x])
+                tempNew = self.tiles[y-1][x]
+                self:tileSwap(swapTemp, tempNew)
 
-                if self.calculateMatches() then
-                    self.tileSwap(swapTemp, self.tiles[y-1][x])
+                if self:calculateMatches() then
+                    self:tileSwap(swapTemp, tempNew)
                     return true
                 end
-                self.tileSwap(swapTemp, self.tiles[y-1][x])
+                self:tileSwap(swapTemp, tempNew)
             end
 
             if y+1 <= 8 then --check above
-                self.tileSwap(swapTemp, self.tiles[y+1][x])
+                tempNew = self.tiles[y+1][x]
+                self:tileSwap(swapTemp, tempNew)
 
-                if self.calculateMatches() then
-                    self.tileSwap(swapTemp, self.tiles[y+1][x])
+                if self:calculateMatches() then
+                    self:tileSwap(swapTemp, tempNew)
                     return true
                 end
-                self.tileSwap(swapTemp, self.tiles[y+1][x])
+                self:tileSwap(swapTemp, tempNew)
             end
         end
     end
     return false
 end
 
-function Board:tileSwap(swapTile, newTile)
-    local tempX = newTile.gridX
-    local tempY = newTile.gridY
-    local tempTile = newTile
+function Board:tileSwap(swapTemp, tempNew)
+    local tempX = tempNew.gridX
+    local tempY = tempNew.gridY
+    local tempTile = tempNew
 
-    newTile.gridX = swapTile.gridX
-    newTile.gridY = swapTile.gridY
+    tempNew.gridX = swapTemp.gridX
+    tempNew.gridY = swapTemp.gridY
 
-    swapTile.gridX = tempX
-    swapTile.gridY = tempY
+    swapTemp.gridX = tempX
+    swapTemp.gridY = tempY
 
-    self.tiles[tempY][tempX] = swapTile
-    self.tiles[newTile.gridY][newTile.gridX] = newTile
+    self.tiles[tempY][tempX] = swapTemp
+    self.tiles[tempNew.gridY][tempNew.gridX] = tempNew
 
 end
 

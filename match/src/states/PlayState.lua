@@ -63,6 +63,11 @@ function PlayState:enter(params)
     -- spawn a board and place it toward the right
     self.board = params.board or Board(VIRTUAL_WIDTH - 272, 16, self.level)
 
+    while not self.board:isMatches() do
+        self.board = nil
+        self.board = Board(VIRTUAL_WIDTH - 272, 16, self.level)
+    end
+
     -- grab score from params if it was passed
     self.score = params.score or 0
 
@@ -199,6 +204,11 @@ function PlayState:update(dt)
                 end)
             end
         end
+    end
+    
+    while not self.board:isMatches() do
+        self.board = nil
+        self.board = Board(VIRTUAL_WIDTH - 272, 16, self.level)
     end
 
     Timer.update(dt)
