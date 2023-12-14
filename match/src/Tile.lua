@@ -44,21 +44,24 @@ function Tile:render(x, y)
     love.graphics.draw(gTextures['main'], gFrames['tiles'][self.color][self.variety],
         self.x + x, self.y + y)
 
-        if self.shiny then
-            love.graphics.setColor(255, 255, 255, self.shinyConfig.factor)
-            love.graphics.rectangle('fill', self.x + x,
-                self.y + y, 32, 32, 4)
+    if self.shiny then
+        love.graphics.setBlendMode('add')
 
-            if not self.shinyConfig.timer then
-                self.shinyConfig.timer = Timer.tween(1.5, {
-                    [self.shinyConfig] = { factor = 0 }
-                }):finish(function()
-                    Timer.tween(.75, {
-                        [self.shinyConfig] = { factor = 1 }
-                    }):finish(function() 
-                        self.shinyConfig.timer = nil
-                    end)
+        love.graphics.setColor(255, 255, 255, self.shinyConfig.factor)
+        love.graphics.rectangle('fill', self.x + x,
+            self.y + y, 32, 32, 4)
+
+        if not self.shinyConfig.timer then
+             self.shinyConfig.timer = Timer.tween(1.5, {
+                [self.shinyConfig] = { factor = 0 }
+            }):finish(function()
+                Timer.tween(.75, {
+                    [self.shinyConfig] = { factor = 1 }
+                }):finish(function() 
+                    self.shinyConfig.timer = nil
                 end)
-            end
+            end)
         end
+        love.graphics.setBlendMode('alpha')
+    end
 end

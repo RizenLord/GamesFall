@@ -54,6 +54,72 @@ function Board:initializeTiles()
     end
 end
 
+function Board:isMatches()
+    for y = 1,8 do
+        for x = 1,8 do
+            swapTemp = self.tiles[y][x]
+
+            if x-1 >= 1 then --check to the left
+                --swap the two tiles using a hilarious function i created so this isnt 100000 lines long
+                self.tileSwap(swapTemp, self.tiles[y][x-1])
+
+                if self.calculateMatches() then
+                    self.tileSwap(swapTemp, self.tiles[y][x-1])
+                    return true
+                end
+                self.tileSwap(swapTemp, self.tiles[y][x-1]) -- swap back
+            end
+
+            if x+1 <= 8 then --check to the right
+                self.tileSwap(swapTemp, self.tiles[y][x+1])
+
+                if self.calculateMatches() then
+                    self.tileSwap(swapTemp, self.tiles[y][x+1])
+                    return true
+                end
+                self.tileSwap(swapTemp, self.tiles[y][x+1])
+            end
+
+            if y-1 >= 1 then --check below
+                self.tileSwap(swapTemp, self.tiles[y-1][x])
+
+                if self.calculateMatches() then
+                    self.tileSwap(swapTemp, self.tiles[y-1][x])
+                    return true
+                end
+                self.tileSwap(swapTemp, self.tiles[y-1][x])
+            end
+
+            if y+1 <= 8 then --check above
+                self.tileSwap(swapTemp, self.tiles[y+1][x])
+
+                if self.calculateMatches() then
+                    self.tileSwap(swapTemp, self.tiles[y+1][x])
+                    return true
+                end
+                self.tileSwap(swapTemp, self.tiles[y+1][x])
+            end
+        end
+    end
+    return false
+end
+
+function Board:tileSwap(swapTile, newTile)
+    local tempX = newTile.gridX
+    local tempY = newTile.gridY
+    local tempTile = newTile
+
+    newTile.gridX = swapTile.gridX
+    newTile.gridY = swapTile.gridY
+
+    swapTile.gridX = tempX
+    swapTile.gridY = tempY
+
+    self.tiles[tempY][tempX] = swapTile
+    self.tiles[newTile.gridY][newTile.gridX] = newTile
+
+end
+
 --[[
     Goes left to right, top to bottom in the board, calculating matches by counting consecutive
     tiles of the same color. Doesn't need to check the last tile in every row or column if the 
@@ -64,10 +130,11 @@ function Board:calculateMatches()
 
     -- how many of the same color blocks in a row we've found
     local matchNum = 1
+    local varietyNum = 0
 
     -- horizontal matches first
     for y = 1, 8 do
-        -- CS50: if tile in match is shiny
+
         local isShiny = false
 
         local colorToMatch = self.tiles[y][1].color
@@ -94,7 +161,6 @@ function Board:calculateMatches()
                         end
                     end
 
-                    -- CS50: if tile in match is shiny add whole row to match table
                     if isShiny then
                         for rowX = 1, 8 do
                             table.insert(match, self.tiles[y][rowX])
@@ -113,7 +179,6 @@ function Board:calculateMatches()
 
                 matchNum = 1
                 
-                -- don't need to check last two if they won't be in a match
                 if x >= 7 then
                     break
                 end
@@ -130,7 +195,6 @@ function Board:calculateMatches()
                 end
             end
             
-            -- CS50: if tile in match is shiny add whole row to match table
             if isShiny then
                 for rowX = 1, 8 do
                     table.insert(match, self.tiles[y][rowX])
@@ -171,7 +235,6 @@ function Board:calculateMatches()
                         end
                     end
 
-                    -- CS50: if tile in match is shiny add whole column to match table
                     if isShiny then
                         for columnY = 1, 8 do
                             table.insert(match, self.tiles[columnY][x])
@@ -187,7 +250,6 @@ function Board:calculateMatches()
 
                 matchNum = 1
 
-                -- don't need to check last two if they won't be in a match
                 if y >= 7 then
                     break
                 end
@@ -204,7 +266,6 @@ function Board:calculateMatches()
                 end
             end
             
-            -- CS50: if tile in match is shiny add whole column to match table
             if isShiny then
                 for columnY = 1, 8 do
                     table.insert(match, self.tiles[columnY][x])
@@ -221,7 +282,6 @@ function Board:calculateMatches()
     end
     -- store matches for later reference
     self.matches = matches
-
     -- return matches table if > 0, else just return false
     return #self.matches > 0 and self.matches or false
 end

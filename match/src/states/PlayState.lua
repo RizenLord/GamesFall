@@ -222,7 +222,7 @@ function PlayState:calculateMatches()
 
         -- add score for each match
         for k, match in pairs(matches) do
-            self.score = self.score + #match * 50
+            self.score = self.score + #match * 50 
             self.timer = self.timer + #match
         end
 
